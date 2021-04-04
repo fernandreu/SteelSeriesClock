@@ -7,8 +7,6 @@ import os
 
 class App:
 
-    TIME_EVENT = 'TIME'
-
     def __init__(self, game, display_name):
         self._game = game
         self._display_name = display_name
@@ -22,10 +20,12 @@ class App:
             'SteelSeries Engine 3',
             'coreProps.json'
         )
-        while not os.path.exists(path):
-            print(f'SteelSeries Engine 3 not launched. Repeating check...')
-            sleep(5)
-        return json.load(open(path))['address']
+        while True:
+            try:
+                return json.load(open(path))['address']
+            except (OSError, KeyError, json.JSONDecodeError):
+                print(f'SteelSeries Engine 3 not launched. Repeating check...')
+                sleep(5)
 
     def register(self):
         metadata = {
@@ -47,6 +47,8 @@ class App:
 
 class ClockApp(App):
 
+    TIME_EVENT = 'TIME'
+
     def __init__(self):
         super().__init__('CLOCK', 'Clock')
 
@@ -64,7 +66,7 @@ class ClockApp(App):
                         {
                             "icon-id": 15,
                             'has-text': True,
-                            # 'bold': True,
+                            'bold': True,
                             'length-millis': 1100
                         }
                     ]
